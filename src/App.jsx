@@ -4,27 +4,29 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
+const assetUrl = (filename) => `${import.meta.env.BASE_URL}assets/${filename}`
+
 const drinkImages = {
-  matcha: '/assets/page-03-02.png',
-  tea: '/assets/page-03-03.png',
-  coffee: '/assets/page-03-04.png',
-  logo: '/assets/page-01-01.png',
-  cafeWindow: '/assets/page-02-01.jpeg',
-  interior1: '/assets/page-04-01.jpeg',
-  interior2: '/assets/page-06-01.jpeg',
-  interior3: '/assets/page-06-02.png',
-  interior4: '/assets/page-06-03.jpeg',
-  interior5: '/assets/page-06-04.png',
-  interior6: '/assets/page-06-05.jpeg',
-  interior7: '/assets/page-06-06.png',
-  interior8: '/assets/page-06-07.png',
-  origin: '/assets/page-05-06.jpeg',
-  handMatcha: '/assets/page-05-05.jpeg',
-  teaLeaves: '/assets/page-06-03.jpeg',
-  workshop1: '/assets/page-07-05.jpeg',
-  workshop2: '/assets/page-07-02.png',
-  workshop3: '/assets/page-07-04.png',
-  collab: '/assets/page-07-02.png',
+  matcha: assetUrl('page-03-02.png'),
+  tea: assetUrl('page-03-03.png'),
+  coffee: assetUrl('page-03-04.png'),
+  logo: assetUrl('page-01-01.png'),
+  cafeWindow: assetUrl('page-02-01.jpeg'),
+  interior1: assetUrl('page-04-01.jpeg'),
+  interior2: assetUrl('page-06-01.jpeg'),
+  interior3: assetUrl('page-06-02.png'),
+  interior4: assetUrl('page-06-03.jpeg'),
+  interior5: assetUrl('page-06-04.png'),
+  interior6: assetUrl('page-06-05.jpeg'),
+  interior7: assetUrl('page-06-06.png'),
+  interior8: assetUrl('page-06-07.png'),
+  origin: assetUrl('page-05-06.jpeg'),
+  handMatcha: assetUrl('page-05-05.jpeg'),
+  teaLeaves: assetUrl('page-06-03.jpeg'),
+  workshop1: assetUrl('page-07-05.jpeg'),
+  workshop2: assetUrl('page-07-02.png'),
+  workshop3: assetUrl('page-07-04.png'),
+  collab: assetUrl('page-07-02.png'),
 }
 
 function Navigation() {
