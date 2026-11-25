@@ -29,6 +29,39 @@ const drinkImages = {
   collab: assetUrl('page-07-02.png'),
 }
 
+const matchaBlends = [
+  { value: 'signature', label: 'Signature Matcha', note: 'Jasmine milk tea + lychee', color: '#81964d', accent: '#c4d083' },
+  { value: 'latte', label: 'Matcha Latte', note: 'Fresh matcha + milk', color: '#91aa65', accent: '#e4dfb8' },
+  { value: 'guiltea', label: 'Guiltea Pleasure', note: 'Vanilla bean + white chocolate milk', color: '#a49554', accent: '#ead69a' },
+  { value: 'nine-to-five', label: '9-to-5', note: 'Earl Grey + matcha', color: '#657c43', accent: '#bdc582' },
+  { value: 'date-night', label: 'Date Night', note: 'Jasmine milk tea + matcha', color: '#91a85b', accent: '#d8d89a' },
+  { value: 'strawberry', label: 'Strawberry Matcha', note: 'Strawberry milk + matcha', color: '#a27d67', accent: '#e4b7a5' },
+  { value: 'dnd', label: 'DND', note: 'Matcha + water over ice', color: '#527338', accent: '#98b269' },
+  { value: 'coast-is-clear', label: 'Coast Is Clear', note: 'Matcha + coconut water', color: '#67917b', accent: '#bfd8bb' },
+]
+const matchaTemperatures = [
+  { value: 'hot', label: 'Hot' },
+  { value: 'cold', label: 'Cold' },
+]
+const matchaSizes = [
+  { value: 'small', label: 'Small' },
+  { value: 'regular', label: 'Regular' },
+]
+const matchaSweetness = [
+  { value: '0%', label: 'Zero', texture: 'none' },
+  { value: '25%', label: 'Low · 25%', texture: 'light' },
+  { value: '50%', label: 'Medium · 50%', texture: 'medium' },
+  { value: '75%', label: 'High · 75%', texture: 'rich' },
+]
+const matchaAddOns = [
+  { value: 'salted-praline', label: 'Salted praline cloud foam', kind: 'foam', color: '#b78c61' },
+  { value: 'cheese-foam', label: 'Cheese foam', kind: 'foam', color: '#ead8a6' },
+  { value: 'vanilla-honey', label: 'Vanilla honey foam', kind: 'foam', color: '#e6c77e' },
+  { value: 'oat-milk', label: 'Oat milk', kind: 'milk', color: '#d9c99e' },
+  { value: 'extra-matcha', label: 'Extra matcha shot', kind: 'shot', color: '#4d7136' },
+  { value: 'agave', label: 'Agave sweetener', kind: 'sweetener', color: '#d3a643' },
+]
+
 function Navigation() {
   const [open, setOpen] = useState(false)
   const [atHero, setAtHero] = useState(true)
@@ -52,7 +85,7 @@ function Navigation() {
       </nav>
       <div className={`menu-panel ${open ? 'is-open' : ''}`} aria-hidden={!open}>
         <div className="menu-links">
-          {[['About', '#about'], ['What we pour', '#pour'], ['The space', '#space'], ['Collaborations', '#collaborate'], ['Find us', '#find']].map(([label, href], i) =>
+          {[['About', '#about'], ['What we pour', '#pour'], ['Mix your matcha', '#mix'], ['The space', '#space'], ['Collaborations', '#collaborate'], ['Find us', '#find']].map(([label, href], i) =>
             <a href={href} key={href} onClick={() => setOpen(false)}><span>0{i + 1}</span>{label}</a>
           )}
         </div>
@@ -63,6 +96,207 @@ function Navigation() {
 
 function BrushMark({ className = '' }) {
   return <span className={`brush-mark ${className}`} aria-hidden="true" />
+}
+
+function MatchaMixer() {
+  const [recipe, setRecipe] = useState({
+    blend: 'signature',
+    temperature: 'cold',
+    size: 'regular',
+    sweetness: '50%',
+    addOns: [],
+  })
+  const [strokes, setStrokes] = useState(0)
+  const totalStrokes = 7
+  const blend = matchaBlends.find(({ value }) => value === recipe.blend)
+  const selectedAddOns = matchaAddOns.filter(({ value }) => recipe.addOns.includes(value))
+  const foam = selectedAddOns.find(({ kind }) => kind === 'foam')
+  const ready = strokes === totalStrokes
+  const addOnDescription = selectedAddOns.map(({ label }) => label).join(', ')
+  const drinkDescription = `${recipe.size} / ${recipe.temperature} / ${recipe.sweetness} sweetness${addOnDescription ? ` / ${addOnDescription}` : ''}.`
+  const sweetness = matchaSweetness.find(({ value }) => value === recipe.sweetness)
+  const sweetnessOpacity = { none: 0.08, light: 0.18, medium: 0.32, rich: 0.52 }[sweetness.texture]
+  const cupClasses = [
+    'mix-stage',
+    `blend-${blend.value}`,
+    `temperature-${recipe.temperature}`,
+    `size-${recipe.size}`,
+    recipe.addOns.includes('extra-matcha') && 'has-extra-matcha',
+    recipe.addOns.includes('agave') && 'has-agave',
+    recipe.addOns.includes('oat-milk') && 'has-oat-milk',
+    foam && `foam-${foam.value}`,
+    strokes > 0 && !ready && 'is-mixing',
+    ready && 'is-ready',
+  ].filter(Boolean).join(' ')
+
+  const chooseOption = (key, value) => {
+    setRecipe((current) => ({ ...current, [key]: value }))
+    setStrokes(0)
+  }
+
+  const toggleAddOn = (value) => {
+    const option = matchaAddOns.find((addOn) => addOn.value === value)
+    setRecipe((current) => ({
+      ...current,
+      addOns: current.addOns.includes(value)
+        ? current.addOns.filter((addOn) => addOn !== value)
+        : [
+            ...current.addOns.filter((addOn) =>
+              option?.kind === 'foam'
+                ? matchaAddOns.find((item) => item.value === addOn)?.kind !== 'foam'
+                : true
+            ),
+            value,
+          ],
+    }))
+    setStrokes(0)
+  }
+
+  const whisk = () => {
+    setStrokes((current) => current >= totalStrokes ? 0 : current + 1)
+  }
+
+  return (
+    <section className="matcha-game" id="mix" aria-labelledby="matcha-game-title">
+      <div className="matcha-game-copy">
+        <p className="mix-kicker">A LITTLE PLAY BEFORE YOUR POUR</p>
+        <h2 className="matcha-game-title" id="matcha-game-title">WHISK UP<br /><em>your own.</em></h2>
+        <p className="mix-intro">Start with one of our matcha favourites, make it yours with a few little extras, then give your cup seven good whisk strokes.</p>
+
+        <div className="mix-controls">
+          <fieldset className="mix-choice mix-choice-blend">
+            <legend><span>01</span> PICK YOUR MATCHA</legend>
+            <div className="mix-blend-options">
+              {matchaBlends.map((option) => (
+                <button
+                  className={`mix-blend-option ${recipe.blend === option.value ? 'is-selected' : ''}`}
+                  type="button"
+                  aria-pressed={recipe.blend === option.value}
+                  key={option.value}
+                  onClick={() => chooseOption('blend', option.value)}
+                >
+                  <span>{option.label}</span>
+                  <small>{option.note}</small>
+                </button>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset className="mix-choice mix-choice-serve">
+            <legend><span>02</span> HOT / COLD + SIZE</legend>
+            <div className="mix-serve-options">
+              <div className="mix-subchoice">
+                <span className="mix-subchoice-label">TEMPERATURE</span>
+                <div className="mix-choice-options">
+                  {matchaTemperatures.map((option) => (
+                    <button className={`mix-option ${recipe.temperature === option.value ? 'is-selected' : ''}`} type="button" aria-pressed={recipe.temperature === option.value} key={option.value} onClick={() => chooseOption('temperature', option.value)}>
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="mix-subchoice">
+                <span className="mix-subchoice-label">SIZE</span>
+                <div className="mix-choice-options">
+                  {matchaSizes.map((option) => (
+                    <button className={`mix-option ${recipe.size === option.value ? 'is-selected' : ''}`} type="button" aria-pressed={recipe.size === option.value} key={option.value} onClick={() => chooseOption('size', option.value)}>
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset className="mix-choice mix-choice-sweetness">
+            <legend><span>03</span> SWEETENER LEVEL</legend>
+            <div className="mix-choice-options">
+              {matchaSweetness.map((option) => (
+                <button className={`mix-option ${recipe.sweetness === option.value ? 'is-selected' : ''}`} type="button" aria-pressed={recipe.sweetness === option.value} key={option.value} onClick={() => chooseOption('sweetness', option.value)}>
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset className="mix-choice mix-choice-addons">
+            <legend><span>04</span> CLOUD FOAM + ADD-ONS</legend>
+            <div className="mix-choice-options">
+              {matchaAddOns.map((option) => (
+                <button className={`mix-option ${recipe.addOns.includes(option.value) ? 'is-selected' : ''}`} type="button" aria-pressed={recipe.addOns.includes(option.value)} key={option.value} onClick={() => toggleAddOn(option.value)}>
+                  {option.label}
+                </button>
+              ))}
+            </div>
+            <p className="mix-addon-hint">Pick as many as you like, or keep it simple.</p>
+          </fieldset>
+        </div>
+      </div>
+
+      <div className="mix-play">
+        <div className="mix-play-heading">
+          <span>THE WHISKING RITUAL</span>
+          <span>{String(strokes).padStart(2, '0')} / 07</span>
+        </div>
+        <div
+          className={cupClasses}
+          style={{
+            '--matcha-color': blend.color,
+            '--blend-accent': blend.accent,
+            '--milk-color': recipe.addOns.includes('oat-milk') ? '#d9c99e' : '#f0e2c5',
+            '--sweetener-color': recipe.sweetness === '0%' ? blend.accent : recipe.sweetness === '75%' ? '#d4bb68' : '#b9b66f',
+            '--sweetness-opacity': sweetnessOpacity,
+            '--foam-color': foam?.color || 'transparent',
+            '--liquid-level': `${24 + (strokes / totalStrokes) * 58}%`,
+          }}
+        >
+          <div
+            className="mix-cup"
+            role="img"
+            aria-label={`${blend.label}, ${recipe.temperature}, ${recipe.size}, ${sweetness.label} sweetness${addOnDescription ? `, ${addOnDescription}` : ''}`}
+          >
+            <span className="mix-liquid">
+              <span className="mix-liquid-pattern" />
+              {foam && <span className="mix-foam" />}
+              {recipe.temperature === 'cold' && <span className="mix-ice mix-ice-one" />}
+              {recipe.temperature === 'cold' && <span className="mix-ice mix-ice-two" />}
+              {recipe.temperature === 'cold' && <span className="mix-ice mix-ice-three" />}
+            </span>
+            <span className="mix-cup-shine" />
+          </div>
+          {recipe.temperature === 'hot' && <span className="mix-steam" aria-hidden="true"><i /><i /><i /></span>}
+          <svg className="mix-whisk" viewBox="0 0 56 210" aria-hidden="true">
+            <path d="M28 7v119" />
+            <path d="M28 124c-18 2-23 13-19 28 4 14 14 28 19 31 5-3 15-17 19-31 4-15-1-26-19-28Z" />
+            <path d="M28 125c-10 13-11 38 0 58m0-58c10 13 11 38 0 58m-15-49c-2 16 4 37 15 49m15-49c2 16-4 37-15 49" />
+          </svg>
+          <span className="mix-stage-note" aria-hidden="true">FRESHLY<br />WHISKED</span>
+        </div>
+        <div
+          className="mix-progress"
+          role="progressbar"
+          aria-label="Whisking progress"
+          aria-valuemin={0}
+          aria-valuemax={totalStrokes}
+          aria-valuenow={strokes}
+        >
+          <span style={{ width: `${(strokes / totalStrokes) * 100}%` }} />
+        </div>
+        <button
+          className="mix-whisk-button"
+          type="button"
+          onClick={whisk}
+          aria-label={ready ? 'Make another matcha' : `Whisk the matcha, stroke ${strokes + 1} of ${totalStrokes}`}
+        >
+          <span>{ready ? 'MAKE ANOTHER' : 'WHISK IT'}</span>
+          <b aria-hidden="true">{ready ? '↻' : `${strokes}/07`}</b>
+        </button>
+        <p className="mix-status" aria-live="polite">
+          {ready ? <><strong>{blend.label}.</strong> {drinkDescription}</> : strokes === 0 ? 'Tap the whisk seven times to bring your blend together.' : `${totalStrokes - strokes} more ${totalStrokes - strokes === 1 ? 'stroke' : 'strokes'} to your perfect cup.`}
+        </p>
+      </div>
+    </section>
+  )
 }
 
 function App() {
@@ -114,7 +348,6 @@ function App() {
 
       <section className="pour" id="pour">
         <div className="pour-heading reveal">
-          <span>01</span>
           <h2>WHAT WE <em>POUR</em></h2>
         </div>
         <article className="pour-item matcha reveal">
@@ -142,6 +375,8 @@ function App() {
           </div>
         </article>
       </section>
+
+      <MatchaMixer />
 
       <section className="principles">
         <h2 className="principles-title reveal">WHAT MAKES US, <em>US</em></h2>
