@@ -248,14 +248,30 @@ function App() {
 
       <footer className="footer" id="find">
         <div className="footer-top">
-          <a href="mailto:emailmaicha@gmail.com">EMAIL US AT<br /><strong>emailmaicha@gmail.com</strong></a>
-          <a href="https://www.instagram.com/drink.maicha/" target="_blank" rel="noreferrer">STAY IN THE LOOP<br /><strong>@drink.maicha</strong></a>
+          <span className="footer-brand">DM / BENGALURU</span>
+          <a href="mailto:emailmaicha@gmail.com">NEED A RECOMMENDATION?<br /><strong>EMAIL US</strong></a>
+          <a href="https://www.instagram.com/drink.maicha/" target="_blank" rel="noreferrer">A GLIMPSE BEFORE YOU GO<br /><strong>@drink.maicha</strong></a>
         </div>
-        <h2 className="footer-title reveal">COME SAY HI</h2>
-        <p className="footer-copy reveal">Made for the curious, the spontaneous and anyone craving something different.<br />No tea expertise or favourite order needed — bring your curiosity; we'll handle the rest.</p>
+        <div className="footer-main">
+          <div className="footer-invite">
+            <p className="footer-kicker">CASTLE STREET / BENGALURU</p>
+            <h2 className="footer-title reveal">TAKE A<br /><em>DETOUR.</em></h2>
+            <p className="footer-copy reveal">The best things are rarely on the straight path. Find our little corner, order something unexpected, and let the afternoon take it from there.</p>
+            <a className="footer-map-link" href="https://maps.app.goo.gl/TWHgutWCLyoWziK47?g_st=ic" target="_blank" rel="noopener noreferrer" aria-label="Get directions to drink maicha in Google Maps">
+              <span>GET DIRECTIONS</span><b aria-hidden="true">↗</b>
+            </a>
+          </div>
+          <div className="footer-visual">
+            <figure className="footer-photo reveal" data-parallax>
+              <img src={drinkImages.interior2} alt="Inside the drink maicha café" />
+              <figcaption className="footer-photo-note">your afternoon looks good from here</figcaption>
+            </figure>
+            <span className="footer-sticker" aria-hidden="true">GOOD<br />CUPS<br />AHEAD</span>
+          </div>
+        </div>
         <div className="footer-bottom">
-          <div><span>FIND US AT</span><strong>CASTLE STREET, BLR</strong></div>
-          <a href="#" aria-label="Google Maps link — configure before launch">LINK TO GOOGLE MAPS<em>configure location</em></a>
+          <span>NO PLAN NEEDED / JUST SHOW UP</span>
+          <span>CASTLE STREET, BENGALURU</span>
         </div>
       </footer>
     </main>
